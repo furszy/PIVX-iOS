@@ -66,7 +66,7 @@ class Utils: NSObject {
             top?.present(mail, animated: true, completion: nil)
             
         } else {
-            Utils.showAlertController(title: nil, message: "Sorry, you don't have any configured email account. Please add it and try again.")
+            Utils.showAlertController(title: nil, message: NSLocalizedString("Sorry, you don't have any configured email account. Please add it and try again.", comment: "no mail account"))
         }
     }
     
@@ -93,7 +93,7 @@ class Utils: NSObject {
                 topController = presentedViewController
             }
             let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default, handler: nil))
             topController.present(alert, animated: true, completion: nil)
         }
     }
@@ -137,10 +137,10 @@ class Utils: NSObject {
     }
     
     @objc static func deviceType()->String{
+        let SCREEN_WIDTH = UIScreen.main.bounds.size.width
+        let SCREEN_HEIGHT = UIScreen.main.bounds.size.height
+        let SCREEN_MAX_LENGTH = max(SCREEN_WIDTH, SCREEN_HEIGHT)
         if UIDevice().userInterfaceIdiom == .phone {
-            let SCREEN_WIDTH = UIScreen.main.bounds.size.width
-            let SCREEN_HEIGHT = UIScreen.main.bounds.size.height
-            let SCREEN_MAX_LENGTH = max(SCREEN_WIDTH, SCREEN_HEIGHT)
             switch SCREEN_MAX_LENGTH {
             case 568.0:
                 print("iPhone 5 or 5S or 5C")
@@ -158,7 +158,31 @@ class Utils: NSObject {
                 print("iPhone XR/XS/Max")
                 return "iphoneXRSMAX"
             default:
-                print(UIScreen.main.nativeBounds.height)
+                NSLog("Screen Max Length: %f", SCREEN_MAX_LENGTH)
+                return ""
+            }
+        }
+        else if UIDevice().userInterfaceIdiom == .pad {
+            switch SCREEN_MAX_LENGTH {
+            case 1024.0:
+                print("iPad")
+                return "ipad"
+            case 1112.0:
+                print("iPad Pro 10")
+                return "ipadpro10"
+            case 1194.0:
+                print("iPad Pro 11")
+                return "ipadpro11"
+            case 1366.0:
+                if #available(iOS 11.0, *), let keyWindow = UIApplication.shared.keyWindow, keyWindow.safeAreaInsets.bottom > 0 {
+                    print("iPad Pro 12 (3rd Generation)")
+                    return "ipadpro12"
+                } else {
+                    print("iPad Pro 12 (1st or 2nd Generation)")
+                    return "ipadpro12_old"
+                }
+            default:
+                NSLog("Screen Max Length: %f", SCREEN_MAX_LENGTH)
                 return ""
             }
         }
